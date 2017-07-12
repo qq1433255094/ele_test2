@@ -29,11 +29,11 @@ void tim3_init(void)
   
   /* Compute the prescaler value */
   tmpvalue = HAL_RCC_GetPCLK1Freq();
-  prescalervalue = (uint16_t) ((tmpvalue * 2) / 1000000) - 1;
+  prescalervalue = (uint16_t) ((tmpvalue * 2) / 1000000) - 1; //1Mhz
   
   /* Time base configuration */
   htim3.Instance = TIM3;
-  htim3.Init.Period = 5000;
+  htim3.Init.Period = 5000; //5ms
   htim3.Init.Prescaler = prescalervalue;
   htim3.Init.ClockDivision = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -61,7 +61,7 @@ void  TIM3_Handler(void)
 {
 	tim3_cnt++;
 	tim3_cnt_button++;
-	button_Getstate(tim3_cnt_button);
+	update_buttonstate(tim3_cnt_button);
 }
 
 

@@ -1,23 +1,36 @@
 #include "button.h"
 
+button_HandleTypeDef button1;
+
 void button_init (void) {
   GPIO_InitTypeDef GPIO_InitStruct;
 
   /* GPIO Ports Clock Enable */
-  __GPIOC_CLK_ENABLE();
+  __GPIOA_CLK_ENABLE();
 
   /* Configure GPIO pin: PA0 (USER) */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
+
+  button1.state = NONE;
+  button1.temp = NONE;
+  button1.read = NONE;
+
+  button1.buff[0] = 0;
+  button1.buff[1] = 0;
+
+  button1.port = GPIOA;
+  button1.pin = GPIO_PIN_0;
+
+  GPIO_InitStruct.Pin = button1.pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(button1.port, &GPIO_InitStruct);
 
 }
 
-uint8_t button_read(void) {
+uint8_t button_read(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin) {
   uint8_t val = 0;
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_4) == GPIO_PIN_SET) {
+  if (HAL_GPIO_ReadPin(GPIOx, GPIO_Pin) == GPIO_PIN_RESET) {
     val =0;
   }
 	else val =1;
@@ -25,50 +38,57 @@ uint8_t button_read(void) {
   return val;
 }
 
-button_type button_state;
-button_type button_temp;
-button_type button_tempstate=NONE;
-uint32_t	button_up_time[2]={0},button_down_time[2]={0};
-uint8_t		button_buff[2];
-
-void button_Getstate(uint32_t time)
+//button_type button_state;
+//button_type button_temp;
+//button_type button_tempstate=NONE;
+//uint32_t	button_up_time[2]={0},button_down_time[2]={0};
+//uint8_t		button_buff[2];
+//time uint 5ms
+#define LONG_TIME 100
+#define DOUBLE_TIME 30
+void button_Getstate(uint32_t time, button_HandleTypeDef *button)
 {
-	button_buff[0]=button_buff[1];
-	button_buff[1]=button_read();
-	if(button_buff[0]==0 && button_buff[1]==1)
+	button->buff[0]=button->buff[1];
+	button->buff[1]=button_read(button->port,button->pin);
+	if(button->buff[0]==0 && button->buff[1]==1)
 	{
-		button_tempstate = UP;
-		button_up_time[0]=button_up_time[1];
-		button_up_time[1]=time;
+		button->read = UP;
+		button->uptime[0]=button->uptime[1];
+		button->uptime[1]=time;
 	}
-	if(button_buff[0]==1 && button_buff[1]==0)
+	if(button->buff[0]==1 && button->buff[1]==0)
 	{
-		button_tempstate = DOWN;
-		button_down_time[0]=button_down_time[1];
-		button_down_time[1]=time;
+		button->read = DOWN;
+		button->downtime[0]=button->downtime[1];
+		button->downtime[1]=time;
 	}
 	
-	if(button_down_time[1]>button_up_time[1] && (button_down_time[1]-button_up_time[1])<=100)
+	if(button->downtime[1]>button->uptime[1] && (button->downtime[1]-button->uptime[1])<= LONG_TIME)
 	{
-		button_temp=PLUSE;
+		button->temp=PLUSE;
 	}
-	if(button_temp==PLUSE && (time-button_down_time[1])>30 && button_up_time[1]<button_down_time[1] &&
-		(button_up_time[1]-button_down_time[0])>30 &&(time-button_down_time[1])<32)
+	if(button->temp==PLUSE && (time-button->downtime[1])>DOUBLE_TIME && button->uptime[1]<button->downtime[1] &&
+		(button->uptime[1]-button->downtime[0])>DOUBLE_TIME &&(time-button->downtime[1])<(DOUBLE_TIME+2))
 	{
-		button_state=PLUSE;
-		button_temp=NONE;
+		button->state=PLUSE;
+		button->temp=NONE;
 	}
-		if(button_temp==PLUSE && (time-button_down_time[1])<30 && button_up_time[1]>button_down_time[1])
+		if(button->temp==PLUSE && (time-button->downtime[1])<DOUBLE_TIME && button->uptime[1]>button->downtime[1])
 	{
-		button_state=DOUBLE;
-		button_temp=NONE;
+		button->state=DOUBLE;
+		button->temp=NONE;
 	}
-		if((time-button_up_time[1])>100 && button_up_time[1]>button_down_time[1] && 
-			(button_up_time[1]-button_down_time[1])>30)
+		if((time-button->uptime[1])>LONG_TIME && button->uptime[1]>button->downtime[1] &&
+			(button->uptime[1]-button->downtime[1])>DOUBLE_TIME)
 	{
-		button_state=LONG;
-		button_temp=NONE;
+		button->state=LONG;
+		button->temp=NONE;
 	}
+}
+
+void update_buttonstate(uint32_t time)
+{
+	button_Getstate(time, &button1);
 }
 	
 	

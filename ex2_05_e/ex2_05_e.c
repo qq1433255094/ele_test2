@@ -69,6 +69,9 @@ int main(void)
 	SystemCoreClockUpdate();
 	
 	HAL_Init();  
+
+	button_init();
+	tim3_init();
 	
 	__GPIOD_CLK_ENABLE();
 	GPIO_InitTypeDef GPIO_InitStructure;
