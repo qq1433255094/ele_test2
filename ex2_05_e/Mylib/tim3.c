@@ -33,7 +33,7 @@ void tim3_init(void)
   
   /* Time base configuration */
   htim3.Instance = TIM3;
-  htim3.Init.Period = 5000; //5ms
+  htim3.Init.Period = 5000-1; //5ms
   htim3.Init.Prescaler = prescalervalue;
   htim3.Init.ClockDivision = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;

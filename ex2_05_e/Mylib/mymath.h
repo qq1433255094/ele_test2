@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #include "stm32f4xx_hal.h"
-#define	abs(x) (x =(x > 0) ? x:-x)
+#define	abs(x) (((x) > 0) ? (x):-(x))
 	typedef struct
 	{
 		float x_last;

@@ -43,6 +43,8 @@ extern "C" {
 	void Linear_interpolation(int32_t xe, int32_t ye);
 	void plot_circular(int32_t x, int32_t y, int32_t r);
 	void alloc_clk(void);
+	void call_step(int8_t zf);
+	void tim3_delay_us(uint16_t num);
 	
 #ifdef __cplusplus
 }

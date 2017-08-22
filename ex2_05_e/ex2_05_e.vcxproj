@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <AdditionalIncludeDirectories>Mylib;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Mylib;FatFs;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -142,6 +142,10 @@
     <ClCompile Include="BSP\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c" />
     <ClCompile Include="BSP\STM32F4xxxx\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_utils.c" />
     <ClCompile Include="ex2_05_e.c" />
+    <ClCompile Include="FatFs\diskio.c" />
+    <ClCompile Include="FatFs\ff.c" />
+    <ClCompile Include="FatFs\ffsystem.c" />
+    <ClCompile Include="FatFs\ffunicode.c" />
     <ClCompile Include="Mylib\ad.c" />
     <ClCompile Include="Mylib\button.c" />
     <ClCompile Include="Mylib\dac.c" />
@@ -150,6 +154,7 @@
     <ClCompile Include="Mylib\oled.c" />
     <ClCompile Include="Mylib\pwm.c" />
     <ClCompile Include="Mylib\rng.c" />
+    <ClCompile Include="Mylib\sdcard.c" />
     <ClCompile Include="Mylib\spi1.c" />
     <ClCompile Include="Mylib\stepmotor.c" />
     <ClCompile Include="Mylib\tim3.c" />
@@ -289,6 +294,10 @@
     <ClInclude Include="BSP\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_usb.h" />
     <ClInclude Include="BSP\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_utils.h" />
     <ClInclude Include="BSP\STM32F4xxxx\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_wwdg.h" />
+    <ClInclude Include="FatFs\diskio.h" />
+    <ClInclude Include="FatFs\ff.h" />
+    <ClInclude Include="FatFs\ffconf.h" />
+    <ClInclude Include="FatFs\integer.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
     <ClInclude Include="Mylib\ad.h" />
     <ClInclude Include="Mylib\button.h" />
@@ -298,6 +307,7 @@
     <ClInclude Include="Mylib\oled.h" />
     <ClInclude Include="Mylib\pwm.h" />
     <ClInclude Include="Mylib\rng.h" />
+    <ClInclude Include="Mylib\sdcard.h" />
     <ClInclude Include="Mylib\spi1.h" />
     <ClInclude Include="Mylib\stepmotor.h" />
     <ClInclude Include="Mylib\tim3.h" />
@@ -321,6 +331,9 @@
     <Text Include="BSP\FreeRTOS\License\license.txt" />
     <Text Include="BSP\FreeRTOS\Source\readme.txt" />
     <Text Include="BSP\FreeRTOS\Source\st_readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="arm_cortexM4lf_math.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

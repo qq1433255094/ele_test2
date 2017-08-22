@@ -75,13 +75,13 @@ void button_Getstate(uint32_t time, button_HandleTypeDef *button)
 	}
 		if(button->temp==PLUSE && (time-button->downtime[1])<DOUBLE_TIME && button->uptime[1]>button->downtime[1])
 	{
-		button->state=DOUBLE;
+		button->state=DOUBLEPLUSE;
 		button->temp=NONE;
 	}
 		if((time-button->uptime[1])>LONG_TIME && button->uptime[1]>button->downtime[1] &&
 			(button->uptime[1]-button->downtime[1])>DOUBLE_TIME)
 	{
-		button->state=LONG;
+		button->state= LONGPLUSE;
 		button->temp=NONE;
 	}
 }

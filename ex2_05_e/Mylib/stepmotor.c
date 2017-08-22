@@ -2,11 +2,12 @@
 #include "stm32f4xx_hal.h"
 #include "arm_math.h"
 #include "os_task.h"
+#include "mymath.h"
 
 float step_l_diff = 0, step_r_diff = 0;
 int32_t step_l = 0 , step_r = 0;
 int32_t dir_l = 1, dir_r = 1;
-int32_t position_x=400, position_y=800;
+int32_t position_x=0, position_y=0;
 float line_l, line_r;
 
 void stepmotor_init(void)
@@ -20,9 +21,28 @@ void stepmotor_init(void)
 	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	SET_L_CLK_LOW();
+	SET_R_CLK_LOW();
+	//cal_line_lenght(position_x, position_y, &line_l, &line_r);
 
-	cal_line_lenght(position_x, position_y, &line_l, &line_r);
+}
 
+void tim3_delay_us(uint16_t num)
+{
+	uint32_t time;
+	uint8_t ex = 0;
+	if (num > 1000)
+		num = 1000;
+	time = TIM3->CNT;
+	while (!ex)
+	{
+		if (TIM3->CNT > time)
+			if (TIM3->CNT - time >= num)
+				ex = 1;
+		if (TIM3->CNT < time)
+			if (TIM3->CNT + 5000 - time >= num)
+				ex = 1;
+	}
 }
 
 void cal_line_lenght(int32_t pos_x, int32_t pos_y, float *lenght_l, float *lenght_r)
@@ -111,28 +131,45 @@ void alloc_clk(void)
 	}
 }
 
-
+float rate;
 void call_step(int8_t zf)
 {
 	switch (zf)
 	{
-	case 1:cal_step(1, 0); break;
-	case 2:cal_step(-1, 0); break;
-	case 3:cal_step(0, 1); break;
-	case 4:cal_step(0, -1); break;
+	case 1:	SET_R_DIR_FORWARD();	SET_L_DIR_FORWARD();	tim3_delay_us(80* rate);
+			SET_R_CLK_HIGH();		SET_L_CLK_HIGH();		tim3_delay_us(5);
+			SET_R_CLK_LOW();		SET_L_CLK_LOW();		//tim3_delay_us(80); 
+			position_x += 1;
+			break;
+	case 2:	SET_R_DIR_BACKWARD();	SET_L_DIR_BACKWARD();	tim3_delay_us(80* rate);
+			SET_R_CLK_HIGH();		SET_L_CLK_HIGH();		tim3_delay_us(5);
+			SET_R_CLK_LOW();		SET_L_CLK_LOW();		//tim3_delay_us(80);
+			position_x -= 1;
+			break;
+	case 3:	SET_R_DIR_FORWARD();	SET_L_DIR_BACKWARD();	tim3_delay_us(80* rate);
+			SET_R_CLK_HIGH();		SET_L_CLK_HIGH();		tim3_delay_us(5);
+			SET_R_CLK_LOW();		SET_L_CLK_LOW();		//tim3_delay_us(80);
+			position_y += 1;
+			break;
+	case 4:	SET_R_DIR_BACKWARD();	SET_L_DIR_FORWARD();	tim3_delay_us(80* rate);
+			SET_R_CLK_HIGH();		SET_L_CLK_HIGH();		tim3_delay_us(5);
+			SET_R_CLK_LOW();		SET_L_CLK_LOW();		//tim3_delay_us(80);
+			position_y -= 1;
+			break;
 	default:
-		break;
+			break;
 	}
 }
 
 void Linear_interpolation(int32_t xe,int32_t ye)
 {
-	int32_t fm = 0,nxy;
+	
+	int32_t fm = 0,nxy,d;
 	int8_t xoy,zf;
-	int32_t xr = fabs(xe - position_x), yr = fabs(ye - position_y);
-
-	nxy =fabs(xe - position_x)+ fabs(ye - position_y);
-
+	int32_t xr = abs(xe - position_x), yr = abs(ye - position_y);
+	d = sqrt(xr*xr + yr*yr);
+	nxy = xr+yr;
+	rate = (float)d / (float)nxy;
 	if (xe - position_x >=0)
 	{
 		if (ye - position_y >= 0) {

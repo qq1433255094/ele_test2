@@ -23,6 +23,9 @@
     <Filter Include="Header files\Device-specific files">
       <UniqueIdentifier>{e4c54de6-2317-4840-8af1-e4809ff31530}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source files\FatFs">
+      <UniqueIdentifier>{7e7c8535-a6fd-400b-95e8-ace2a7f7d4bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ex2_05_e.c">
@@ -366,6 +369,21 @@
     </ClCompile>
     <ClCompile Include="Mylib\stepmotor.c">
       <Filter>Resource files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mylib\sdcard.c">
+      <Filter>Resource files</Filter>
+    </ClCompile>
+    <ClCompile Include="FatFs\diskio.c">
+      <Filter>Source files\FatFs</Filter>
+    </ClCompile>
+    <ClCompile Include="FatFs\ff.c">
+      <Filter>Source files\FatFs</Filter>
+    </ClCompile>
+    <ClCompile Include="FatFs\ffsystem.c">
+      <Filter>Source files\FatFs</Filter>
+    </ClCompile>
+    <ClCompile Include="FatFs\ffunicode.c">
+      <Filter>Source files\FatFs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -807,6 +825,21 @@
     <ClInclude Include="Mylib\stepmotor.h">
       <Filter>Resource files</Filter>
     </ClInclude>
+    <ClInclude Include="Mylib\sdcard.h">
+      <Filter>Resource files</Filter>
+    </ClInclude>
+    <ClInclude Include="FatFs\diskio.h">
+      <Filter>Source files\FatFs</Filter>
+    </ClInclude>
+    <ClInclude Include="FatFs\ff.h">
+      <Filter>Source files\FatFs</Filter>
+    </ClInclude>
+    <ClInclude Include="FatFs\ffconf.h">
+      <Filter>Source files\FatFs</Filter>
+    </ClInclude>
+    <ClInclude Include="FatFs\integer.h">
+      <Filter>Source files\FatFs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ex2_05_e-Debug.vgdbsettings">
@@ -834,5 +867,10 @@
     <Text Include="BSP\FreeRTOS\Source\st_readme.txt">
       <Filter>Source files\Device-specific files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="arm_cortexM4lf_math.lib">
+      <Filter>Source files\Device-specific files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

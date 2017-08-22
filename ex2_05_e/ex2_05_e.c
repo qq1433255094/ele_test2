@@ -40,6 +40,9 @@
 #include <math.h>
 #include "arm_math.h"
 #include "oled.h"
+#include "ff.h"
+#include "sdcard.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -55,8 +58,8 @@
   * @retval None
   */
 void setSystemClock(void);
-
-
+FATFS fs;
+uint8_t sd_buff[512];
 int main(void)
 {
   /* STM32F4xx HAL library initialization:
@@ -65,10 +68,27 @@ int main(void)
        - Set NVIC Group Priority to 4
        - Global MSP (MCU Support Package) initialization
      */
+	FRESULT fr;
+	FIL fp;
+	uint8_t stat;
+	uint8_t str[20];
+	DIR dir;
+	FILINFO fno;
+
 	setSystemClock();
 	SystemCoreClockUpdate();
 	
 	HAL_Init();  
+
+	fr = f_mount(&fs, "", 0);
+	fr = f_opendir(&dir, "/");
+
+	fno.fattrib = 0;
+	fr = f_readdir(&dir, &fno);
+
+	fr = f_open(&fp, "log.txt", FA_READ);
+	f_gets(str, 10, &fp);
+	fr = f_close(&fp);
 
 	button_init();
 	tim3_init();
@@ -83,6 +103,21 @@ int main(void)
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
 
+	__GPIOE_CLK_ENABLE();
+	//GPIO_InitTypeDef GPIO_InitStructure;
+
+	GPIO_InitStructure.Pin = GPIO_PIN_1 | GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3;
+
+	GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStructure.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
+
 	os_task_init();
 	os_task_start();
 
@@ -93,7 +128,7 @@ int main(void)
 
 void SysTick_Handler(void)
 {
-	alloc_clk();
+	//alloc_clk();
 	HAL_IncTick();
 	osSystickHandler();
 }

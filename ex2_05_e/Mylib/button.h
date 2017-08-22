@@ -13,8 +13,8 @@ typedef enum
 	UP=0,
 	DOWN=1,
 	PLUSE=2,
-	LONG=3,
-	DOUBLE=4
+	LONGPLUSE =3,
+	DOUBLEPLUSE =4
 }button_type;
 
 typedef struct
