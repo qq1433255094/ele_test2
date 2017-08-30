@@ -7,13 +7,15 @@
 
 #include "stm32f4xx.h"                  // Device header
 #include "stm32f4xx_hal.h"              // Keil::Device:STM32Cube HAL:Common
-#include "system_stm32f4xx.h"    
+#include "system_stm32f4xx.h" 
 
-#define LCD_RST_PIN GPIO_PIN_0
-#define LCD_DC_PIN  GPIO_PIN_1
-#define LCD_SCL_PIN GPIO_PIN_2
-#define LCD_SDA_PIN GPIO_PIN_3
-#define LCD_GPIO    GPIOC
+#define LCD_SCL_PIN GPIO_PIN_0  //DO
+#define LCD_SDA_PIN GPIO_PIN_1  //DI
+#define LCD_RST_PIN GPIO_PIN_2
+#define LCD_DC_PIN  GPIO_PIN_3
+
+#define LCD_GPIO			  GPIOA
+#define __OLED_CLK_ENABLE() __GPIOA_CLK_ENABLE()
 	
 void OLED_Configuration(void);  
 void OLED_Print(unsigned char x, unsigned char y, char ch[]);

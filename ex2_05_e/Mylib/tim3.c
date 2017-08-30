@@ -57,8 +57,21 @@ void TIM3_IRQHandler(void)
 
 uint32_t tim3_cnt=0,tim3_freq=LED_1HZ,tim3_cnt_button=0;
 
+uint8_t tim3_state = 1;
+
 void  TIM3_Handler(void)
 {
+	/*if (tim3_state == 1)
+	{
+		tim3_state = 2;
+		TIM3->ARR = 10000 - 1;
+	}
+	else if (tim3_state == 2)
+	{
+		tim3_state = 1;
+		TIM3->ARR = 5000 - 1;
+	}*/
+
 	tim3_cnt++;
 	tim3_cnt_button++;
 	update_buttonstate(tim3_cnt_button);

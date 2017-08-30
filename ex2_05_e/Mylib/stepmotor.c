@@ -227,8 +227,10 @@ void plot_circular(int32_t x, int32_t y,int32_t r)
 		y_set = y + r*sin(PI * 2 / 64.0*i);
 
 		Linear_interpolation(x_set, y_set);
+		//osDelay(5);
 	}
 	x_set = x + r;
 	y_set = y;
 	Linear_interpolation(x_set, y_set);
+	//osDelay(5);
 }

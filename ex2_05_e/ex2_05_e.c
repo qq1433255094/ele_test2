@@ -42,6 +42,7 @@
 #include "oled.h"
 #include "ff.h"
 #include "sdcard.h"
+//#include "SysprogsProfiler.h"
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,8 +59,11 @@
   * @retval None
   */
 void setSystemClock(void);
-FATFS fs;
-uint8_t sd_buff[512];
+
+
+
+
+
 int main(void)
 {
   /* STM32F4xx HAL library initialization:
@@ -68,29 +72,73 @@ int main(void)
        - Set NVIC Group Priority to 4
        - Global MSP (MCU Support Package) initialization
      */
-	FRESULT fr;
-	FIL fp;
-	uint8_t stat;
-	uint8_t str[20];
-	DIR dir;
-	FILINFO fno;
+	
+	
+	
+	
+	uint8_t fico[2] = { 127,0 };
+	uint32_t len = 0;
 
 	setSystemClock();
 	SystemCoreClockUpdate();
 	
 	HAL_Init();  
+	//InitializeInstrumentingProfiler();
+	OLED_Configuration();
 
-	fr = f_mount(&fs, "", 0);
-	fr = f_opendir(&dir, "/");
+	//BSP_SD_Init();
+	////BSP_SD_ReadBlocks(sd_buff, 0, 0, 1);
+	//BSP_SD_ReadBlocks_DMA(sd_buff, 0, 0, 1);
 
-	fno.fattrib = 0;
-	fr = f_readdir(&dir, &fno);
+	
 
-	fr = f_open(&fp, "log.txt", FA_READ);
-	f_gets(str, 10, &fp);
-	fr = f_close(&fp);
+	//uint8_t display_y = 0;
+	//for (int8_t i = 0; i < 4; i++)
+	//{
+	//	fno.fattrib = 0;
+	//	fr = f_readdir(&dir, &fno);
 
-	button_init();
+	//	if (fno.fattrib == 0) break;
+	//	if ((fno.fattrib & AM_SYS) !=0 ) continue;
+	//	if ((fno.fattrib & AM_HID) != 0) continue;
+	//	if ((fno.fattrib & AM_DIR) != 0)
+	//	{
+	//		OLED_Print(0, display_y, fico);
+	//		OLED_Print(8, display_y, fno.fname);
+	//		display_y += 2;
+	//	}
+	//	else
+	//	{
+	//		OLED_Print(0, display_y, fno.fname);
+	//		display_y += 2;
+	//	}
+	//	
+	//}
+
+	//fr = f_open(&fp, "log2.txt", FA_READ);
+	//
+
+	//f_gets(str, 10, &fp);
+
+	//OLED_Print(0, 6, str);
+
+	
+	//f_gets(str, 10, &fp);
+	//while (f_gets(str, 100, &fp) != 0) len++;
+		//OLED_Print(0,6,str);
+	//OLED_PrintN(0, 6, "LEN ",len);
+	//while (get_gcode(&fp) != EOF);
+	//OLED_PrintN(0, 6, "LEN ", len);
+	//stat = f_gets(str, 10, &fp);
+	//stat = f_gets(str, 10, &fp);
+	//stat = f_gets(str, 10, &fp);
+	//stat = f_gets(str, 10, &fp);
+	//stat = f_gets(str, 10, &fp);
+
+
+	
+
+	//button_init();
 	tim3_init();
 	
 	__GPIOD_CLK_ENABLE();

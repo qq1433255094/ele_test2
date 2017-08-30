@@ -37,7 +37,7 @@ DSTATUS disk_status (
 		return stat;
 
 	case DEV_MMC :
-		result = BSP_SD_GetStatus();
+		result = 0;// BSP_SD_GetStatus();
 
 		// translate the reslut code here
 		stat = result;
@@ -123,8 +123,8 @@ DRESULT disk_read (
 	case DEV_MMC :
 		// translate the arguments here
 
-		result = BSP_SD_ReadBlocks(buff, sector,0, count);
-		BSP_SD_ReadBlocks(test_sd_buff, sector,0, count);
+		result = BSP_SD_ReadBlocks((uint8_t *)buff, sector,0, count);
+		//BSP_SD_ReadBlocks(test_sd_buff, sector,0, count);
 		// translate the reslut code here
 		res = result;
 		return res;
@@ -171,7 +171,7 @@ DRESULT disk_write (
 	case DEV_MMC :
 		// translate the arguments here
 
-		result = BSP_SD_WriteBlocks(buff, sector, 0, count);
+		result = BSP_SD_WriteBlocks((uint8_t *)buff, sector, 0, count);
 
 		// translate the reslut code here
 		res = result;

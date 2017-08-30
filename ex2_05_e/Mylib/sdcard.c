@@ -153,7 +153,7 @@ uint8_t BSP_SD_Init(void)
   uSdHandle.Init.ClockPowerSave      = SDIO_CLOCK_POWER_SAVE_DISABLE;
   uSdHandle.Init.BusWide             = SDIO_BUS_WIDE_1B;
   uSdHandle.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-  uSdHandle.Init.ClockDiv            = SDIO_INIT_CLK_DIV;
+  uSdHandle.Init.ClockDiv            = 25-1;
   
   /* Configure IO functionalities for SD detect pin */
   //BSP_IO_Init(); 
@@ -302,12 +302,13 @@ uint8_t BSP_SD_ReadBlocks_DMA(uint8_t *pData, uint32_t ReadAddr, uint32_t BlockS
   /* Wait until transfer is complete */
   if(SD_state == MSD_OK)
   {
-	while (HAL_SD_GetCardState(&uSdHandle) == HAL_SD_CARD_TRANSFER)
+	  
+	while (uSdHandle.hdmarx->State != HAL_DMA_STATE_READY)
     {
       SD_state = MSD_ERROR;
     }
       SD_state = MSD_OK;
-
+	 // HAL_Delay(10);
   }
   
   return SD_state; 
@@ -335,7 +336,7 @@ uint8_t BSP_SD_WriteBlocks_DMA(uint8_t *pData, uint32_t WriteAddr, uint32_t Bloc
   /* Wait until transfer is complete */
   if(SD_state == MSD_OK)
   {
-	  while (HAL_SD_GetCardState(&uSdHandle) == HAL_SD_CARD_TRANSFER)
+	  while (uSdHandle.hdmatx->State != HAL_DMA_STATE_READY)
 	  {
 		  SD_state = MSD_ERROR;
 	  }
@@ -399,7 +400,7 @@ static void SD_MspInit(void)
   HAL_GPIO_Init(GPIOD, &GPIO_Init_Structure);
 
   /* NVIC configuration for SDIO interrupts */
-  HAL_NVIC_SetPriority(SDIO_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(SDIO_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(SDIO_IRQn);
     
   /* Configure DMA Rx parameters */
@@ -453,11 +454,11 @@ static void SD_MspInit(void)
   HAL_DMA_Init(&dmaTxHandle); 
   
   /* NVIC configuration for DMA transfer complete interrupt */
-  HAL_NVIC_SetPriority(SD_DMAx_Rx_IRQn, 6, 0);
+  HAL_NVIC_SetPriority(SD_DMAx_Rx_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(SD_DMAx_Rx_IRQn);
   
   /* NVIC configuration for DMA transfer complete interrupt */
-  HAL_NVIC_SetPriority(SD_DMAx_Tx_IRQn, 6, 0);
+  HAL_NVIC_SetPriority(SD_DMAx_Tx_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(SD_DMAx_Tx_IRQn);
 }
 
